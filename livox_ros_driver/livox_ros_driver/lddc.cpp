@@ -141,7 +141,15 @@ uint32_t Lddc::PublishPointcloud2(LidarDataQueue *queue, uint32_t packet_num,
   }
   
   sensor_msgs::PointCloud2 cloud;
-  cloud.header.frame_id.assign(frame_id_);
+  if (use_multi_topic_) {
+    char frame_id[48];
+    memset(frame_id, 0, sizeof(frame_id));
+    snprintf(frame_id, sizeof(frame_id), "lidar_%s", lds_->lidars_[handle].info.broadcast_code);
+    cloud.header.frame_id.assign(frame_id);
+  }
+  else {
+    cloud.header.frame_id.assign(frame_id_);
+  }
   cloud.height = 1;
   cloud.width  = 0;
   cloud.fields.resize(6);
@@ -261,7 +269,15 @@ uint32_t Lddc::PublishPointcloudData(LidarDataQueue *queue, uint32_t packet_num,
 
   /* init point cloud data struct */
   PointCloud::Ptr cloud(new PointCloud);
-  cloud->header.frame_id.assign(frame_id_);
+  if (use_multi_topic_) {
+    char frame_id[48];
+    memset(frame_id, 0, sizeof(frame_id));
+    snprintf(frame_id, sizeof(frame_id), "lidar_%s", lds_->lidars_[handle].info.broadcast_code);
+    cloud->header.frame_id.assign(frame_id);
+  }
+  else {
+    cloud->header.frame_id.assign(frame_id_);
+  }
   /* cloud->header.stamp = ros::Time::now(); */
   cloud->height = 1;
   cloud->width  = 0;
@@ -354,7 +370,15 @@ uint32_t Lddc::PublishCustomPointcloud(LidarDataQueue *queue,
   livox_ros_driver::CustomMsg livox_msg;
 
   //livox_msg.header.frame_id = "livox_frame";
-  livox_msg.header.frame_id.assign(frame_id_);
+  if (use_multi_topic_) {
+    char frame_id[48];
+    memset(frame_id, 0, sizeof(frame_id));
+    snprintf(frame_id, sizeof(frame_id), "lidar_%s", lds_->lidars_[handle].info.broadcast_code);
+    livox_msg.header.frame_id.assign(frame_id);
+  }
+  else {
+    livox_msg.header.frame_id.assign(frame_id_);
+  }
   
   livox_msg.header.seq = msg_seq;
   ++msg_seq;
@@ -458,8 +482,15 @@ uint32_t Lddc::PublishImuData(LidarDataQueue *queue, uint32_t packet_num,
   uint32_t published_packet = 0;
 
   sensor_msgs::Imu imu_data;
-  //imu_data.header.frame_id = "livox_frame";
-  imu_data.header.frame_id.assign(frame_id_);
+  if (use_multi_topic_) {
+    char frame_id[48];
+    memset(frame_id, 0, sizeof(frame_id));
+    snprintf(frame_id, sizeof(frame_id), "lidar_%s", lds_->lidars_[handle].info.broadcast_code);
+    imu_data.header.frame_id.assign(frame_id);
+  }
+  else {
+    imu_data.header.frame_id.assign(frame_id_);
+  }
 
   uint8_t data_source = lds_->lidars_[handle].data_src;
   StoragePacket storage_packet;
