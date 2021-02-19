@@ -130,15 +130,6 @@ int32_t Lddc::GetPublishStartTime(LidarDevice *lidar, LidarDataQueue *queue,
 }
 
 void Lddc::InitPointcloud2MsgHeader(sensor_msgs::PointCloud2& cloud) {
-  if (use_multi_topic_) {
-    char frame_id[48];
-    memset(frame_id, 0, sizeof(frame_id));
-    snprintf(frame_id, sizeof(frame_id), "lidar_%s", lds_->lidars_[handle].info.broadcast_code);
-    cloud.header.frame_id.assign(frame_id);
-  }
-  else {
-    cloud.header.frame_id.assign(frame_id_);
-  }
   cloud.height = 1;
   cloud.width = 0;
   cloud.fields.resize(6);
@@ -184,6 +175,16 @@ uint32_t Lddc::PublishPointcloud2(LidarDataQueue *queue, uint32_t packet_num,
 
   sensor_msgs::PointCloud2 cloud;
   InitPointcloud2MsgHeader(cloud);
+  if (use_multi_topic_) {
+    char frame_id[48];
+    memset(frame_id, 0, sizeof(frame_id));
+    snprintf(frame_id, sizeof(frame_id), "lidar_%s", lds_->lidars_[handle].info.broadcast_code);
+    cloud.header.frame_id.assign(frame_id);
+  }
+  else {
+    cloud.header.frame_id.assign(frame_id_);
+  }
+
   cloud.data.resize(packet_num * kMaxPointPerEthPacket *
                     sizeof(LivoxPointXyzrtl));
   cloud.point_step = sizeof(LivoxPointXyzrtl);
