@@ -29,6 +29,8 @@
 #include <chrono>
 #include <functional>
 #include <thread>
+#include <cstdio>
+#include <memory>
 
 namespace livox_ros {
 using namespace std;

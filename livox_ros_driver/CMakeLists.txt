@@ -8,6 +8,8 @@ cmake_minimum_required(VERSION 3.0)
 #---------------------------------------------------------------------------------------
 include(cmake/version.cmake)
 project(livox_ros_driver VERSION ${LIVOX_ROS_DRIVER_VERSION} LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "livox_ros_driver version: ${LIVOX_ROS_DRIVER_VERSION}")
 
 #---------------------------------------------------------------------------------------
@@ -78,7 +80,7 @@ endif()
 #---------------------------------------------------------------------------------------
 # Compiler config
 #---------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -95,16 +97,18 @@ if((NOT LIVOX_SDK_LIBRARY) OR (NOT EXISTS ${LIVOX_SDK_LIBRARY}))
 	message("git clone Livox-SDK from github temporarily, only for ROS distro jenkins build!")
 
 	# clone livox sdk source code from github
-	execute_process(COMMAND rm -rf ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK OUTPUT_VARIABLE cmd_res)
-	message("Try to pull the livox sdk source code from github")
-	FOREACH(res ${cmd_res})
-		MESSAGE(${res})
-	ENDFOREACH()
+    if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK)
+	    execute_process(COMMAND rm -rf ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK OUTPUT_VARIABLE cmd_res)
+	    message("Try to pull the livox sdk source code from github")
+	    FOREACH(res ${cmd_res})
+		    MESSAGE(${res})
+	    ENDFOREACH()
 
-	execute_process(COMMAND git clone https://github.com/Livox-SDK/Livox-SDK.git ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK OUTPUT_VARIABLE cmd_res)
-	FOREACH(res ${cmd_res})
-		MESSAGE(${res})
-	ENDFOREACH()
+	    execute_process(COMMAND git clone https://github.com/Livox-SDK/Livox-SDK.git ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK OUTPUT_VARIABLE cmd_res)
+	    FOREACH(res ${cmd_res})
+		    MESSAGE(${res})
+	    ENDFOREACH()
+    endif()
 
 	execute_process(COMMAND cmake .. WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK/build OUTPUT_VARIABLE cmd_res)
 	FOREACH(res ${cmd_res})
