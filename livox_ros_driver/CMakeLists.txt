@@ -130,6 +130,8 @@ if((NOT LIVOX_SDK_LIBRARY) OR (NOT EXISTS ${LIVOX_SDK_LIBRARY}))
 		${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK/build/sdk_core
 	)
 
+	set(LIVOX_SDK_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/Livox-SDK/build/sdk_core/liblivox_sdk_static.a)
+
 else()
 	message("find livox sdk library success")
 endif()
@@ -198,7 +200,7 @@ target_include_directories(${PROJECT_NAME}_node
 # link libraries
 #---------------------------------------------------------------------------------------
 target_link_libraries(${PROJECT_NAME}_node
-	livox_sdk_static.a
+	${LIVOX_SDK_LIBRARY}
 	${Boost_LIBRARY}
 	${catkin_LIBRARIES}
 	${PCL_LIBRARIES}
